@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  WeatherApp
-//
-//  Created by i0240 on 14.11.2024.
-//
-
 import SwiftUI
 import CoreData
 

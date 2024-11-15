@@ -1,10 +1,3 @@
-//
-//  WeatherAppTests.swift
-//  WeatherAppTests
-//
-//  Created by i0240 on 14.11.2024.
-//
-
 import Testing
 @testable import WeatherApp
 

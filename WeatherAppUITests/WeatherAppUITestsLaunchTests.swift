@@ -1,10 +1,3 @@
-//
-//  WeatherAppUITestsLaunchTests.swift
-//  WeatherAppUITests
-//
-//  Created by i0240 on 14.11.2024.
-//
-
 import XCTest
 
 final class WeatherAppUITestsLaunchTests: XCTestCase {
