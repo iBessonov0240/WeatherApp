@@ -2,9 +2,17 @@ import SwiftUI
 
 struct Main: View {
 
-    // MARK: - Property
+    // MARK: - Properties
 
     @StateObject private var viewModel = MainViewModel()
+
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \CityWeather.timestamp, ascending: true)],
+        animation: .default
+    )
+    private var savedCities: FetchedResults<CityWeather>
+
+    @Environment(\.managedObjectContext) private var viewContext
 
     // MARK: - View
 
@@ -71,7 +79,6 @@ struct Main: View {
                                         from: nil,
                                         for: nil
                                     )
-
                                 } label: {
                                     Text("Done")
                                         .foregroundStyle(Color.blue)
@@ -98,6 +105,40 @@ struct Main: View {
                     }
                     .padding(.top, 50)
 
+                    List {
+                        ForEach(savedCities) { city in
+                            HStack {
+                                Text(city.name ?? "Unknown City")
+                                    .font(.headline)
+
+                                Spacer()
+
+                                Text("\(city.temperature)°C")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                viewModel.selectCity(city: city)
+                            }
+                        }
+                        .onDelete { offsets in
+                            viewModel.deleteCity(offsets: offsets, cities: savedCities, context: viewContext)
+                        }
+                    }
+                    .listStyle(.plain)
+                    .frame(maxHeight: 300)
+                    .toolbar {
+                        ToolbarItem {
+                            Button {
+                                Task {
+                                    await viewModel.saveWeather(context: viewContext)
+                                }
+                            } label: {
+                                Label("Add Item", systemImage: "plus")
+                            }
+                        }
+                    }
                     Spacer()
                 }
                 .frame(maxWidth: UIScreen.main.bounds.width)

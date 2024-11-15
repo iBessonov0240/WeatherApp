@@ -2,7 +2,7 @@ import SwiftUI
 
 @main
 struct WeatherAppApp: App {
-    let persistenceController = PersistenceController.shared
+    let persistenceController = WeatherPersistenceController.shared
 
     var body: some Scene {
         WindowGroup {

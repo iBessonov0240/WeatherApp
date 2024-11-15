@@ -18,14 +18,14 @@ struct DayOfWeekCell: View {
                 .foregroundColor(.white)
                 .font(.system(size: 18, weight: .semibold))
                 .lineLimit(1)
-                .minimumScaleFactor(0.5)
+                .minimumScaleFactor(0.3)
                 .padding(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             Image(systemName: condition)
                 .resizable()
                 .scaledToFit()
-                .frame(width: min(20, 25), height: min(20, 25))
+                .frame(width: min(15, 25), height: min(15, 25))
                 .foregroundColor(.white)
                 .padding(.horizontal)
 

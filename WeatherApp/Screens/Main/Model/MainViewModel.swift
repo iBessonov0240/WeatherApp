@@ -1,4 +1,6 @@
 import Foundation
+import CoreData
+import SwiftUI
 
 final class MainViewModel: ObservableObject {
 
@@ -9,9 +11,15 @@ final class MainViewModel: ObservableObject {
     @Published var cityName: String = ""
     @Published var isShowWeatherDescription: Bool = false
     @Published var fiveDayForecast: [DescriptionModel] = []
+
     private var fetchTask: Task<Void, Never>?
 
     // MARK: - Functions
+
+    @MainActor
+    func saveWeather(context: NSManagedObjectContext) async {
+        saveCityWeather(context: context)
+    }
 
     @MainActor
     func fetchWeather() async {
@@ -34,7 +42,6 @@ final class MainViewModel: ObservableObject {
     }
 
     private func extractFiveDayForecast(from list: [WeatherResponse.Weather]) -> [DescriptionModel] {
-
         var dailyForecast: [DescriptionModel] = []
 
         for item in list {
@@ -63,5 +70,37 @@ final class MainViewModel: ObservableObject {
 
     func weatherCityDescription() {
         isShowWeatherDescription = true
+    }
+
+    func saveCityWeather(context: NSManagedObjectContext) {
+        withAnimation {
+            let newCity = CityWeather(context: context)
+            newCity.name = cityName
+            newCity.temperature = Int16(temperature)
+            newCity.timestamp = Date()
+
+            do {
+                try context.save()
+            } catch {
+                print("Error saving city: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func deleteCity(offsets: IndexSet, cities: FetchedResults<CityWeather>, context: NSManagedObjectContext) {
+        withAnimation {
+            offsets.map { cities[$0] }.forEach(context.delete)
+
+            do {
+                try context.save()
+            } catch {
+                print("Error deleting city: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    func selectCity(city: CityWeather) {
+        cityName = city.name ?? "Unknown City"
+        temperature = Int(city.temperature)
     }
 }
